@@ -1,0 +1,57 @@
+{
+  "model": "Cost-sensitive XGBoost",
+  "dataset": "Uploaded ULB/Kaggle Credit Card Fraud Detection CSV",
+  "raw_rows": 284807,
+  "raw_columns": 31,
+  "raw_duplicate_rows": 1081,
+  "clean_rows": 283726,
+  "clean_fraud_rows": 473,
+  "clean_legitimate_rows": 283253,
+  "clean_fraud_rate": 0.001667101358352777,
+  "missing_values": 0,
+  "split": {
+    "train_rows": 198608,
+    "validation_rows": 42559,
+    "test_rows": 42559,
+    "train_fraud": 331,
+    "validation_fraud": 71,
+    "test_fraud": 71,
+    "random_state": 42,
+    "stratified": true,
+    "ratios": "70/15/15"
+  },
+  "model_parameters": {
+    "n_estimators": 250,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "scale_pos_weight": 599.02416918429,
+    "tree_method": "hist",
+    "random_state": 42
+  },
+  "threshold": 0.5358873605728149,
+  "threshold_selection_rule": "Maximum validation precision among thresholds with validation recall >= 0.80.",
+  "validation_precision_at_threshold": 0.8636363636363636,
+  "validation_recall_at_threshold": 0.8028169014084507,
+  "test_average_precision": 0.7942430248159227,
+  "test_roc_auc": 0.9685919603480418,
+  "test_accuracy": 0.9993420898047417,
+  "test_precision": 0.8028169014084507,
+  "test_recall": 0.8028169014084507,
+  "test_f1": 0.8028169014084507,
+  "test_confusion_matrix": [
+    [
+      42474,
+      14
+    ],
+    [
+      14,
+      57
+    ]
+  ],
+  "test_alerts": 71,
+  "test_alert_rate": 0.0016682722808336662,
+  "training_seconds": 8.568830966949463,
+  "note": "These are this Module 6 rebuild's reproducible results. They may differ from Module 5 report values if library versions, model settings, or split implementation differ."
+}
