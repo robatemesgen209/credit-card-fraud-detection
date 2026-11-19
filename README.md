@@ -55,7 +55,7 @@ Start the API:
 ```powershell
 uvicorn src.api:app --reload
 ```
-
+https://robatemesgen209-credit-card-fraud-detection-app-2noat7.streamlit.app/
 API docs: http://127.0.0.1:8000/docs  
 Health: http://127.0.0.1:8000/health  
 Scoring: `POST http://127.0.0.1:8000/v1/fraud/score`
