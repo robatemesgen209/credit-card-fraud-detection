@@ -97,11 +97,36 @@ def load_model(model_path):
             "Please check your artifacts folder."
         )
 
-    return joblib.load(path)
+    artifact = joblib.load(path)
+
+    # The artifact is saved as a dict; unwrap the pipeline from it.
+    if isinstance(artifact, dict):
+        pipeline = artifact.get("pipeline")
+        if pipeline is None:
+            raise ValueError(
+                "Model artifact is a dict but contains no 'pipeline' key. "
+                f"Available keys: {list(artifact.keys())}"
+            )
+        return pipeline
+
+    return artifact
 
 
 def load_threshold() -> float:
-    """Use the project's saved threshold when present; otherwise use its known value."""
+    """Read threshold from the model artifact first; fall back to report files, then the default."""
+    artifact_path = MODEL_PATH
+    if artifact_path.exists():
+        try:
+            raw = joblib.load(artifact_path)
+            if isinstance(raw, dict):
+                value = raw.get("threshold")
+                if value is not None:
+                    value = float(value)
+                    if 0.0 <= value <= 1.0:
+                        return value
+        except Exception:
+            pass
+
     possible_files = [
         Path("reports/evaluation.json"),
         Path("reports/threshold.json"),
@@ -326,7 +351,7 @@ if page == "Overview":
         ]
         st.dataframe(
             results[display_columns].tail(10),
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
         )
     else:
@@ -383,7 +408,6 @@ elif page == "Single Transaction":
         submitted = st.form_submit_button(
             "Analyze transaction",
             type="primary",
-            use_container_width=True,
         )
 
     if submitted:
@@ -459,9 +483,9 @@ elif page == "Batch Analysis":
             raw = pd.read_csv(uploaded_file)
             st.markdown("#### File preview")
             st.caption(f"{len(raw):,} rows · {len(raw.columns):,} columns")
-            st.dataframe(raw.head(8), use_container_width=True, hide_index=True)
+            st.dataframe(raw.head(8), width="stretch", hide_index=True)
 
-            if st.button("Run fraud analysis", type="primary", use_container_width=True):
+            if st.button("Run fraud analysis", type="primary"):
                 with st.spinner("Analyzing transactions..."):
                     prepared = validate_and_prepare(raw, feature_order)
                     results = analyze_transactions(model, prepared, threshold)
@@ -488,7 +512,7 @@ elif page == "Batch Analysis":
 
                 st.dataframe(
                     shown,
-                    use_container_width=True,
+                    width="stretch",
                     hide_index=True,
                     column_config={
                         "Fraud Probability": st.column_config.NumberColumn(
@@ -507,7 +531,6 @@ elif page == "Batch Analysis":
                     file_name="fraud_analysis_results.csv",
                     mime="text/csv",
                     type="primary",
-                    use_container_width=True,
                 )
 
                 st.markdown("### Risk distribution")
